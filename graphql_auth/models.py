@@ -41,7 +41,8 @@ class UserStatus(models.Model):
     def send(self, subject, template, context, recipient_list=None):
         _subject = render_to_string(subject, context).replace("\n", " ").strip()
         html_message = render_to_string(template, context)
-        message = strip_tags(html_message)
+        # message = strip_tags(html_message)
+        message = html_message
 
         return send_mail(
             subject=_subject,
