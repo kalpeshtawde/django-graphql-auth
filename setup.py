@@ -25,22 +25,15 @@ dev_requires = ["black==19.3b0", "flake8==3.7.7"] + tests_require
 
 setup(
     name="django-graphql-auth",
-    #version=get_version("graphql_auth"),
-    version="0.3.16",
+    version="0.1.0",  # Add a static version number
     license="MIT",
     description="Graphql and relay authentication with Graphene for Django.",
     long_description=open("README.rst").read(),
     long_description_content_type="text/x-rst",
-    author="pedrobern",
-    author_email="pedrobermoreira@gmail.com",
-    maintainer="pedrobern",
-    url="https://github.com/PedroBern/django-graphql-auth",
-    project_urls=OrderedDict(
-        (
-            ("Documentation", "https://django-graphql-auth.readthedocs.io/en/latest/"),
-            ("Issues", "https://github.com/PedroBern/django-graphql-auth/issues"),
-        )
-    ),
+    author="kalpeshtawde",
+    author_email="kalpeshtawde@outlook.com",
+    maintainer="kalpeshtawde",
+    url="https://github.com/kalpeshtawde/django-graphql-auth",
     packages=find_packages(exclude=["tests*"]),
     install_requires=[
         "Django>=2.2.0",
@@ -50,7 +43,6 @@ setup(
         "graphene>=2.1.8",
         "PyJWT<2.0.0",
     ],
-    tests_require=tests_require,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
@@ -68,5 +60,4 @@ setup(
     keywords="api graphql rest relay graphene auth",
     zip_safe=False,
     include_package_data=True,
-    extras_require={"test": tests_require, "dev": dev_requires},
 )
