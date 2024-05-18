@@ -25,7 +25,8 @@ dev_requires = ["black==19.3b0", "flake8==3.7.7"] + tests_require
 
 setup(
     name="django-graphql-auth",
-    version=get_version("graphql_auth"),
+    #version=get_version("graphql_auth"),
+    version="0.1.0",
     license="MIT",
     description="Graphql and relay authentication with Graphene for Django.",
     long_description=open("README.rst").read(),
