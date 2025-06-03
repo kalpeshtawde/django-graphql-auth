@@ -10,34 +10,16 @@ UserModel = get_user_model()
 
 def get_user_by_email(email):
     """
-    get user by email or by secondary email
-    raise ObjectDoesNotExist
+    Get user by email or by secondary email (case-insensitive).
+    Raise ObjectDoesNotExist if not found.
     """
     try:
-        user = UserModel._default_manager.get(**{UserModel.EMAIL_FIELD__iexact: email})
+        lookup = f"{UserModel.EMAIL_FIELD}__iexact"
+        user = UserModel._default_manager.get(**{lookup: email})
         return user
     except ObjectDoesNotExist:
         status = UserStatus._default_manager.get(secondary_email__iexact=email)
         return status.user
-
-
-## Replaced this method with new one which performs case insensitive email comparison
-# def get_user_to_login(**kwargs):
-#     """
-#     get user by kwargs or secondary email
-#     to perform login
-#     raise ObjectDoesNotExist
-#     """
-#     try:
-#         user = UserModel._default_manager.get(**kwargs)
-#         return user
-#     except ObjectDoesNotExist:
-#         if app_settings.ALLOW_LOGIN_WITH_SECONDARY_EMAIL:
-#             email = kwargs.get(UserModel.EMAIL_FIELD, None)
-#             if email:
-#                 status = UserStatus._default_manager.get(secondary_email=email)
-#                 return status.user
-#         raise ObjectDoesNotExist
 
 
 def get_user_to_login(**kwargs):
@@ -45,11 +27,12 @@ def get_user_to_login(**kwargs):
     Get user by kwargs or secondary email (case-insensitive) to perform login.
     Raise ObjectDoesNotExist if not found.
     """
-    email = kwargs.get(UserModel.EMAIL_FIELD, None)
+    email_field = UserModel.EMAIL_FIELD
+    email = kwargs.get(email_field)
 
     try:
         if email:
-            return UserModel._default_manager.get(**{f"{UserModel.EMAIL_FIELD}__iexact": email})
+            return UserModel._default_manager.get(**{f"{email_field}__iexact": email})
         return UserModel._default_manager.get(**kwargs)
     except ObjectDoesNotExist:
         if app_settings.ALLOW_LOGIN_WITH_SECONDARY_EMAIL and email:
