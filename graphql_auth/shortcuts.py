@@ -14,26 +14,45 @@ def get_user_by_email(email):
     raise ObjectDoesNotExist
     """
     try:
-        user = UserModel._default_manager.get(**{UserModel.EMAIL_FIELD: email})
+        user = UserModel._default_manager.get(**{UserModel.EMAIL_FIELD__iexact: email})
         return user
     except ObjectDoesNotExist:
-        status = UserStatus._default_manager.get(secondary_email=email)
+        status = UserStatus._default_manager.get(secondary_email__iexact=email)
         return status.user
+
+
+## Replaced this method with new one which performs case insensitive email comparison
+# def get_user_to_login(**kwargs):
+#     """
+#     get user by kwargs or secondary email
+#     to perform login
+#     raise ObjectDoesNotExist
+#     """
+#     try:
+#         user = UserModel._default_manager.get(**kwargs)
+#         return user
+#     except ObjectDoesNotExist:
+#         if app_settings.ALLOW_LOGIN_WITH_SECONDARY_EMAIL:
+#             email = kwargs.get(UserModel.EMAIL_FIELD, None)
+#             if email:
+#                 status = UserStatus._default_manager.get(secondary_email=email)
+#                 return status.user
+#         raise ObjectDoesNotExist
 
 
 def get_user_to_login(**kwargs):
     """
-    get user by kwargs or secondary email
-    to perform login
-    raise ObjectDoesNotExist
+    Get user by kwargs or secondary email (case-insensitive) to perform login.
+    Raise ObjectDoesNotExist if not found.
     """
+    email = kwargs.get(UserModel.EMAIL_FIELD, None)
+
     try:
-        user = UserModel._default_manager.get(**kwargs)
-        return user
+        if email:
+            return UserModel._default_manager.get(**{f"{UserModel.EMAIL_FIELD}__iexact": email})
+        return UserModel._default_manager.get(**kwargs)
     except ObjectDoesNotExist:
-        if app_settings.ALLOW_LOGIN_WITH_SECONDARY_EMAIL:
-            email = kwargs.get(UserModel.EMAIL_FIELD, None)
-            if email:
-                status = UserStatus._default_manager.get(secondary_email=email)
-                return status.user
-        raise ObjectDoesNotExist
+        if app_settings.ALLOW_LOGIN_WITH_SECONDARY_EMAIL and email:
+            status = UserStatus._default_manager.get(secondary_email__iexact=email)
+            return status.user
+        raise
