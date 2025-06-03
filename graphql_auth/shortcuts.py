@@ -21,6 +21,7 @@ def get_user_by_email(email):
         return status.user
 
 
+
 ## Replaced this method with new one which performs case insensitive email comparison
 # def get_user_to_login(**kwargs):
 #     """
